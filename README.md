@@ -1,20 +1,30 @@
 # The OpenClaw Journey: From Scratch to Pro 🚀
 
-> A production-ready blueprint for a single-agent, multi-channel OpenClaw environment. Created with love by AJ and his agents.
+> A breakdown of my personal OpenClaw configuration and the "Lessons Learned" from my multi-agent setup. Created with love by AJ and his agents.
 
 ---
 
 ## 🏗️ 1. Infrastructure & Installation
-I run my environment on a dedicated **AWS EC2 instance (Ubuntu 22.04)**, but the file structures and logic are identical if you're running on **macOS**.
+I run my environment on a dedicated **AWS EC2 instance (Ubuntu 22.04)**, but the logic is identical if you're on **macOS**.
+
+### 💻 Prerequisites:
+- **Node.js:** You need version 22 or newer. Check with `node --version`.
 
 ### 📥 How I Installed It:
-I used the official one-liner from **[openclaw.ai](https://openclaw.ai/)** which handles Node.js and dependencies automatically:
+I used the official one-liner which handles Node.js and dependencies automatically (works on macOS, Linux, and Windows):
 ```bash
 curl -fsSL https://openclaw.ai/install.sh | bash
 ```
 
+### 🪄 The Onboarding Wizard:
+The official way to bootstrap is to run the wizard. This handles auth, gateway settings, and your initial channel setup:
+```bash
+openclaw onboard --install-daemon
+```
+*Reference: [Official Getting Started Guide](https://docs.openclaw.ai/start/getting-started)*
+
 ### 📂 Directory Structure (Informational):
-Once the onboarding wizard finishes, it generates this structure in your Home folder. Here is how mine looks:
+Once the onboarding finishes, it generates this structure in your Home folder. Here is how mine looks:
 ```text
 ~/.openclaw/                # Generated hidden config directory
 ├── openclaw.json           # THE BRAIN: API keys, bots, and agent logic
@@ -32,49 +42,34 @@ Once the onboarding wizard finishes, it generates this structure in your Home fo
 ---
 
 ## 💬 2. Channels: Connecting the Front-Ends
-I use **Discord** for my primary deep-work UI and **Telegram** for quick mobile tasks. Here is exactly how I set them up:
+I use **Discord** for my primary deep-work UI and **Telegram** for quick mobile tasks.
 
 ### 🔹 Discord Setup (Step-by-Step)
 1.  **Create Application:** Go to the [Discord Developer Portal](https://discord.com/developers/applications) and create a "New Application."
 2.  **Generate Token:** Go to the **Bot** tab and click "Reset Token." This is your `botToken`.
-3.  **The "Golden Toggle" (Don't skip!):** On the same **Bot** tab, scroll down to **Privileged Gateway Intents**. You **MUST** toggle **ON** "Message Content Intent" or the bot won't be able to see your messages.
-4.  **Invite Bot:** Go to **OAuth2** -> **URL Generator**.
-    *   Select Scope: `bot`
-    *   Select Permissions: `Administrator`.
-5.  **Authorize:** Copy the URL, paste it in your browser, and add the bot to your server.
+3.  **The "Golden Toggle":** On the **Bot** tab, scroll to **Privileged Gateway Intents**. You **MUST** toggle **ON** "Message Content Intent."
+4.  **Invite Bot:** Go to **OAuth2** -> **URL Generator** -> Select `bot` scope + `Administrator` permissions. Copy the URL and invite the bot to your server.
 
 ### 🔹 Telegram Setup (Step-by-Step)
 1.  **Talk to the Father:** Open Telegram and search for **[@BotFather](https://t.me/botfather)**.
-2.  **New Bot:** Send `/newbot`.
-3.  **Get Token:** BotFather will give you an **API Token**. This is your `botToken` for `openclaw.json`.
-4.  **Privacy:** If using in groups, send `/setprivacy` to BotFather and toggle it to **Disabled**.
+2.  **New Bot:** Send `/newbot` and follow the prompts.
+3.  **Get Token:** BotFather will give you an **API Token**. This goes into your `openclaw.json`.
 
 ---
 
-## 🧬 3. Personality & Personalization
-The most important lesson I learned: **Context is everything.** The agent reads these files at the start of every session to determine its personality.
-
-- **[SOUL.md](examples/SOUL.md):** I set "Core Truths" here so my agent doesn't act like a corporate robot.
-- **[USER.md](examples/USER.md):** I gave it my timezone and habits. This is how it knows to nudge me if I haven't worked out.
-- **[IDENTITY.md](examples/IDENTITY.md):** Set the agent's name, emoji, and avatar.
-- **[HEARTBEAT.md](examples/HEARTBEAT.md):** This is my "background" brain. The agent checks this file periodically to see if it should take proactive actions.
-
----
-
-## 🔑 4. The Model: Gemini 3 Flash (OAuth)
-I use **Gemini 3 Flash** via the `google-gemini-cli` provider. It's fast and cheap, but the setup is unique because it uses **OAuth** instead of a static API key.
+## 🔑 3. The Model: Gemini 3 Flash (OAuth)
+I use **Gemini 3 Flash** via the `google-gemini-cli` provider. It uses **OAuth** instead of a static API key.
 
 ### How I triggered the Auth Flow:
 1. I added the `"google-gemini-cli"` block to my `openclaw.json`.
 2. I stopped my background service: `openclaw gateway stop`.
-3. I ran it manually in the foreground: `openclaw gateway start`.
-4. The terminal printed a **Google URL**. I opened it, signed in, and pasted the **Verification Code** back into the terminal.
-5. OpenClaw saved the token in `~/.config/google-gemini-cli/`.
+3. I ran it manually: `openclaw gateway start`.
+4. The terminal printed a **Google URL**. I signed in via browser and pasted the **Verification Code** back into the terminal.
 
 ---
 
-## 🧠 5. My Core Configuration: `openclaw.json`
-Here is a sanitized version of my "Brain" file showing how I bind everything together.
+## 🧠 4. My Core Configuration: `openclaw.json`
+Sanitized version showing how I bind everything together:
 
 ```json
 {
@@ -113,18 +108,28 @@ Here is a sanitized version of my "Brain" file showing how I bind everything tog
 
 ---
 
+## 🧬 5. Personality & Personalization
+The most important lesson I learned: **Context is everything.**
+
+- **[SOUL.md](examples/SOUL.md):** Personality definition.
+- **[USER.md](examples/USER.md):** My context (timezone, habits).
+- **[HEARTBEAT.md](examples/HEARTBEAT.md):** Background brain for proactive checks.
+
+---
+
 ## ⌨️ 6. Management Commands
-- `openclaw gateway status`  - Check if the system is running.
-- `openclaw gateway restart` - Run this after every `openclaw.json` edit.
-- `/status` (in chat) - Check current token usage and model.
-- `/compact` (in chat) - Manual context flush to save tokens.
+- `openclaw gateway status`  - Check if system is running.
+- `openclaw gateway restart` - Apply `openclaw.json` changes.
+- `openclaw dashboard`       - Open the local Control UI (browser-based chat).
+- `/status` (in chat)        - Check token usage and model.
+- `/compact` (in chat)       - Manual context flush.
 
 ---
 
 ## 🛡️ 7. Security & Redundancy
-- **Firewall:** I keep ports 22, 80, and 443 restricted to my **Home IP** only.
-- **S3 Backups:** I use a cron job to sync my entire workspace to S3 every 6 hours.
-- **Git Mirroring:** I use `git remote add mirror <url>` to push my workspace to both GitLab and GitHub so I never lose my memory files.
+- **Firewall:** Keep ports 22, 80, and 443 restricted to your **Home IP** only.
+- **S3 Backups:** Use a cron job to sync your workspace to S3 every 6 hours.
+- **Git Mirroring:** Use `git remote add mirror <url>` to push to both GitLab and GitHub.
 
 ---
 *A chronicle of Tysam Labs — Feb 19, 2026*
