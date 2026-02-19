@@ -90,11 +90,34 @@ This file is the single source of truth for your ecosystem. Note that the Google
 
 ---
 
-## 3. 🔑 Google Gemini (OAuth) Setup
+## 3. 💬 Channel Setup (The Front Ends)
+
+### 🔹 Discord Setup
+1.  Go to the **[Discord Developer Portal](https://discord.com/developers/applications)**.
+2.  Click **New Application** and give it a name.
+3.  Go to the **Bot** tab on the left sidebar.
+4.  Click **Reset Token** (or "Copy Token") to get your `botToken`. Paste this into your `openclaw.json`.
+5.  **CRITICAL:** Scroll down to the **Privileged Gateway Intents** section and toggle **ON** the "Message Content Intent." Without this, the agent won't be able to read your messages.
+6.  Go to the **OAuth2** tab -> **URL Generator**.
+    *   Select Scope: `bot`
+    *   Select Bot Permissions: `Administrator` (or specifically `Send Messages`, `Read Messages`, etc.)
+7.  Copy the generated URL and paste it into your browser to invite the bot to your Discord server.
+
+### 🔹 Telegram Setup
+1.  Open Telegram and search for **[@BotFather](https://t.me/botfather)**.
+2.  Send the command `/newbot`.
+3.  Follow the prompts to give your bot a Name and a Username (must end in `_bot`).
+4.  BotFather will reply with your **API Token** (e.g., `123456789:ABCDefGhIjkl...`).
+5.  Paste this token into the `botToken` field under the Telegram account in your `openclaw.json`.
+6.  Message your new bot on Telegram to start the first session!
+
+---
+
+## 4. 🔑 Google Gemini (OAuth) Setup
 If you want to use **Gemini 3 Flash**, you'll use the `google-gemini-cli` provider. Since this uses your actual Google Account, you must complete an OAuth flow in your terminal.
 
 ### The Flow:
-1.  **Configure:** Add the `"google-gemini-cli"` block to your `openclaw.json` (as shown above).
+1.  **Configure:** Add the `"google-gemini-cli"` block to your `openclaw.json`.
 2.  **Set the Model:** Ensure your agent is using `google-gemini-cli/gemini-3-flash-preview`.
 3.  **Trigger Auth:** Run `openclaw gateway stop` and then start it manually in your terminal (not as a background service) so you can see the prompts:
     ```bash
@@ -109,7 +132,7 @@ If you want to use **Gemini 3 Flash**, you'll use the `google-gemini-cli` provid
 
 ---
 
-## 4. ⌨️ Essential OpenClaw CLI Commands
+## 5. ⌨️ Essential OpenClaw CLI Commands
 Once installed, you interact with the system using the `openclaw` command.
 
 ### Gateway Management (The Daemon)
@@ -125,7 +148,7 @@ Once installed, you interact with the system using the `openclaw` command.
 
 ---
 
-## 5. 🧬 Personalizing the Agent
+## 6. 🧬 Personalizing the Agent
 The agent reads these files at the start of **every** session.
 
 - **SOUL.md:** Define the vibe. Use this to set "Core Truths" (e.g., "Be resourceful before asking questions").
@@ -134,7 +157,7 @@ The agent reads these files at the start of **every** session.
 
 ---
 
-## 6. 🛡️ Security & Redundancy
+## 7. 🛡️ Security & Redundancy
 - **AWS Security Groups:** Keep ports 22 (SSH), 80, and 443 restricted to your **Home IP** only.
 - **S3 Sync:** Set up a crontab to run a sync script every 6 hours:
   ```bash
