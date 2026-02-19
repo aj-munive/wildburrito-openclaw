@@ -4,8 +4,18 @@
 
 ---
 
-## 1. 🏗️ Infrastructure & File Structure
-OpenClaw is highly portable and runs identically on **Ubuntu Linux** (e.g., AWS EC2) and **macOS**.
+## 1. 🏗️ Infrastructure & Installation
+OpenClaw is a Node.js-based autonomous agent system. It is highly portable and runs identically on **Ubuntu Linux** (e.g., AWS EC2) and **macOS**.
+
+### 💻 Prerequisites:
+- **Node.js:** Ensure you have the latest LTS version (`v22+`).
+- **NPM:** Comes bundled with Node.js.
+
+### 📥 Install OpenClaw:
+Run the following command in your terminal to install OpenClaw globally:
+```bash
+npm install -g openclaw
+```
 
 ### 📂 Core Directory Structure:
 Create this folder structure in your User's Home folder:
@@ -107,6 +117,8 @@ Since Gemini uses your actual Google Account, you must complete an OAuth flow in
 
 ## 6. ⌨️ Management Commands
 - `openclaw gateway status`  - Check if the system is running.
+- `openclaw gateway start`   - Start the gateway in the background.
+- `openclaw gateway stop`    - Stop the running gateway.
 - `openclaw gateway restart` - Apply changes made to `openclaw.json`.
 - `/status` (in chat) - Check token usage and current model.
 - `/compact` (in chat) - Manual context flush to save tokens.
@@ -115,7 +127,7 @@ Since Gemini uses your actual Google Account, you must complete an OAuth flow in
 
 ## 7. 🛡️ Security & Redundancy
 - **Firewall:** Keep ports 22, 80, and 443 restricted to your **Home IP** only.
-- **S3 Sync:** Set up a crontab to sync your workspace to S3 every 6 hours.
+- **S3 Sync:** Set up a crontab to run a sync script every 6 hours.
 - **Git Mirroring:** Use `git remote add mirror <url>` to push to both GitLab and GitHub.
 
 ---
