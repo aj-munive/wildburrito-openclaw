@@ -1,6 +1,6 @@
 # The Ultimate OpenClaw Setup Guide 🚀
 
-> A production-ready blueprint for a multi-agent, multi-channel OpenClaw environment.
+> A production-ready blueprint for a single-agent, multi-channel OpenClaw environment.
 
 ---
 
@@ -18,10 +18,6 @@ OpenClaw is a Node.js-based autonomous agent system. It works best on a stable, 
 │   │   ├── MEMORY.md       # Long-term curated memories
 │   │   ├── memory/         # Daily session logs (YYYY-MM-DD.md)
 │   │   └── skills/         # Custom scripts/tools (e.g., weather, obsidian)
-│   └── agents/             # THE ORG: Sub-agent workspaces
-│       └── equitas/        # Example specialized agent
-│           ├── SOUL.md     # Auditor personality
-│           └── USER.md     # Financial context only
 └── backup-to-s3.sh         # Redundancy script
 ```
 
@@ -34,10 +30,6 @@ This file is the single source of truth for your ecosystem. Note that the Google
 {
   "models": {
     "providers": {
-      "anthropic": {
-        "apiKey": "sk-ant-...",
-        "api": "anthropic-messages"
-      },
       "google-gemini-cli": {
         "api": "google-gemini-cli"
       }
@@ -66,12 +58,9 @@ This file is the single source of truth for your ecosystem. Note that the Google
       {
         "id": "main",
         "default": true,
-        "model": { "primary": "anthropic/claude-sonnet-4-6" }
-      },
-      {
-        "id": "equitas",
-        "workspace": "/home/ubuntu/.openclaw/agents/equitas",
-        "model": { "primary": "google-gemini-cli/gemini-3-flash-preview" }
+        "model": { 
+          "primary": "google-gemini-cli/gemini-3-flash-preview" 
+        }
       }
     ]
   },
@@ -81,7 +70,7 @@ This file is the single source of truth for your ecosystem. Note that the Google
       "match": { "channel": "discord", "accountId": "primary" }
     },
     {
-      "agentId": "equitas",
+      "agentId": "main",
       "match": { "channel": "telegram", "accountId": "mobile" }
     }
   ]
@@ -114,7 +103,7 @@ This file is the single source of truth for your ecosystem. Note that the Google
 ---
 
 ## 4. 🔑 Google Gemini (OAuth) Setup
-If you want to use **Gemini 3 Flash**, you'll use the `google-gemini-cli` provider. Since this uses your actual Google Account, you must complete an OAuth flow in your terminal.
+Since we are using **Gemini 3 Flash**, you'll use the `google-gemini-cli` provider. Since this uses your actual Google Account, you must complete an OAuth flow in your terminal.
 
 ### The Flow:
 1.  **Configure:** Add the `"google-gemini-cli"` block to your `openclaw.json`.
@@ -153,7 +142,6 @@ The agent reads these files at the start of **every** session.
 
 - **SOUL.md:** Define the vibe. Use this to set "Core Truths" (e.g., "Be resourceful before asking questions").
 - **USER.md:** Give it your context. Timezone, goals, and recurring tasks. 
-- **Pro-Tip:** If you have multiple agents, keep their `USER.md` files specific. Don't tell your Finance agent about your gym habits, or he'll start nagging you to lift when he should be auditing receipts.
 
 ---
 
