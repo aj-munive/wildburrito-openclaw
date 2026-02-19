@@ -1,7 +1,7 @@
 # The OpenClaw Journey: From Scratch to Pro 🚀
 
-> *"Debí tirar más fotos*
-> *Pa' cuando no te tenga, poder ver tus ojos"*
+> *"Debí tirar más fotos de cuando te tuve.*
+> *Debí darte más beso' y abrazo' las vece' que pude."*
 > — **Bad Bunny (DTMF)**
 
 > A breakdown of my personal OpenClaw configuration and the "Lessons Learned" from my multi-agent setup. Created with love by AJ and his agents.
