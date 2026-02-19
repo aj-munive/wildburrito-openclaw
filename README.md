@@ -1,6 +1,6 @@
 # The Ultimate OpenClaw Setup Guide 🚀
 
-> A production-ready blueprint for a single-agent, multi-channel OpenClaw environment.
+> A production-ready blueprint for a single-agent, multi-channel OpenClaw environment. Created with love by AJ and his agents.
 
 ---
 
