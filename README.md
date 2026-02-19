@@ -5,20 +5,23 @@
 ---
 
 ## 1. 🏗️ Infrastructure & File Structure
-OpenClaw is a Node.js-based autonomous agent system. It works best on a stable, always-on environment like an AWS EC2 instance (Ubuntu 22.04+).
+OpenClaw is a Node.js-based autonomous agent system. It is highly portable and runs identically on **Ubuntu Linux** (e.g., AWS EC2) and **macOS**.
 
-### Core Directory Structure:
+### 💻 OS Compatibility:
+Whether you are on Linux or Mac, the installation and file structure remain the same. The primary difference is that on Linux you'll typically use `systemd` for background management, whereas on Mac you'll run it via terminal or `launchd`.
+
+### 📂 Core Directory Structure:
+The directory structure is identical across platforms:
 ```text
-/home/ubuntu/
-├── .openclaw/              # Hidden config directory
-│   ├── openclaw.json       # THE BRAIN: API keys, bots, and agent logic
-│   ├── workspace/          # THE HEART: Root agent personality and data
-│   │   ├── SOUL.md         # Defining WHO the AI is
-│   │   ├── USER.md         # Defining WHO you are
-│   │   ├── MEMORY.md       # Long-term curated memories
-│   │   ├── memory/         # Daily session logs (YYYY-MM-DD.md)
-│   │   └── skills/         # Custom scripts/tools (e.g., weather, obsidian)
-└── backup-to-s3.sh         # Redundancy script
+~/.openclaw/                # Hidden config directory in your Home folder
+├── openclaw.json           # THE BRAIN: API keys, bots, and agent logic
+├── workspace/              # THE HEART: Root agent personality and data
+│   ├── SOUL.md             # Defining WHO the AI is
+│   ├── USER.md             # Defining WHO you are
+│   ├── MEMORY.md           # Long-term curated memories
+│   ├── memory/             # Daily session logs (YYYY-MM-DD.md)
+│   └── skills/             # Custom scripts/tools (e.g., weather, obsidian)
+└── backup-to-s3.sh         # Redundancy script (Linux/Mac compatible)
 ```
 
 ---
@@ -108,7 +111,7 @@ Since we are using **Gemini 3 Flash**, you'll use the `google-gemini-cli` provid
 ### The Flow:
 1.  **Configure:** Add the `"google-gemini-cli"` block to your `openclaw.json`.
 2.  **Set the Model:** Ensure your agent is using `google-gemini-cli/gemini-3-flash-preview`.
-3.  **Trigger Auth:** Run `openclaw gateway stop` and then start it manually in your terminal (not as a background service) so you can see the prompts:
+3.  **Trigger Auth:** Run `openclaw gateway stop` and then start it manually in your terminal so you can see the prompts:
     ```bash
     openclaw gateway start
     ```
@@ -117,7 +120,7 @@ Since we are using **Gemini 3 Flash**, you'll use the `google-gemini-cli` provid
     *   Sign in with your Google account.
     *   Google will give you a **Verification Code**.
     *   Paste that code back into the terminal and hit Enter.
-5.  **Persistence:** OpenClaw saves this token in `~/.config/google-gemini-cli/`. Once done, you can stop the process and go back to running it as a background service.
+5.  **Persistence:** OpenClaw saves this token in `~/.config/google-gemini-cli/`. Once done, you can stop the process and resume running it in the background.
 
 ---
 
@@ -146,8 +149,8 @@ The agent reads these files at the start of **every** session.
 ---
 
 ## 7. 🛡️ Security & Redundancy
-- **AWS Security Groups:** Keep ports 22 (SSH), 80, and 443 restricted to your **Home IP** only.
-- **S3 Sync:** Set up a crontab to run a sync script every 6 hours:
+- **Firewall:** Keep ports 22 (SSH), 80, and 443 restricted to your **Home IP** only in your AWS Security Group or Router settings.
+- **S3 Sync:** Set up a crontab to run a sync script every 6 hours (compatible with both macOS and Linux):
   ```bash
   aws s3 sync ~/.openclaw/workspace s3://your-bucket-name/backup/
   ```
