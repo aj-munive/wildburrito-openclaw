@@ -12,13 +12,13 @@ OpenClaw is a Node.js-based autonomous agent system. It is highly portable and r
 - **NPM:** Comes bundled with Node.js.
 
 ### 📥 Install OpenClaw:
-The easiest way to install OpenClaw is to use the official one-liner from **[openclaw.ai](https://openclaw.ai/)**:
+The official one-liner installs Node.js and everything else for you. Works on macOS, Windows, and Linux:
 
 ```bash
-curl -sL https://openclaw.ai/install | bash
+curl -fsSL https://openclaw.ai/install.sh | bash
 ```
 
-Alternatively, you can install it via NPM:
+Alternatively, if you already have Node.js, you can install it via NPM:
 ```bash
 npm install -g openclaw
 ```
