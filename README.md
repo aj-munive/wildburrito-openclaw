@@ -141,10 +141,12 @@ Once installed, you interact with the system using the `openclaw` command.
 ---
 
 ## 6. 🧬 Personalizing the Agent
-The agent reads these files at the start of **every** session.
+The agent reads these files at the start of **every** session to determine its personality and understand its user.
 
-- **SOUL.md:** Define the vibe. Use this to set "Core Truths" (e.g., "Be resourceful before asking questions").
-- **USER.md:** Give it your context. Timezone, goals, and recurring tasks. 
+- **[SOUL.md](examples/SOUL.md):** Define the "vibe." Use this to set "Core Truths" and boundaries.
+- **[USER.md](examples/USER.md):** Give the agent your context—timezone, goals, and habits.
+- **[IDENTITY.md](examples/IDENTITY.md):** Set the agent's name, emoji, and avatar.
+- **[HEARTBEAT.md](examples/HEARTBEAT.md):** A checklist for proactive, recurring background tasks.
 
 ---
 
