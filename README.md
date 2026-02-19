@@ -1,4 +1,4 @@
-# The OpenClaw Journey: From Scratch to Pro 🚀
+# The OpenClaw Journey: From Scratch to Fake Pro 🚀
 
 > *"Debí tirar más fotos de cuando te tuve.*
 > *Debí darte más beso' y abrazo' las vece' que pude."*
