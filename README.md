@@ -32,16 +32,23 @@ Once the onboarding wizard finishes, it generates this structure in your Home fo
 ---
 
 ## 💬 2. Channels: Connecting the Front-Ends
-I use **Discord** for my primary deep-work UI and **Telegram** for quick mobile tasks.
+I use **Discord** for my primary deep-work UI and **Telegram** for quick mobile tasks. Here is exactly how I set them up:
 
-### 🔹 What I did for Discord:
-1. Created an app in the [Discord Developer Portal](https://discord.com/developers/applications).
-2. **Crucial Lesson:** I had to toggle **ON** "Message Content Intent" in the Bot tab, or the agent is "deaf."
-3. Generated a bot invite URL with `Administrator` permissions and invited it to my server.
+### 🔹 Discord Setup (Step-by-Step)
+1.  **Create Application:** Go to the [Discord Developer Portal](https://discord.com/developers/applications) and create a "New Application."
+2.  **Generate Token:** Go to the **Bot** tab and click "Reset Token." This is your `botToken`.
+3.  **The "Golden Toggle" (Don't skip!):** On the same **Bot** tab, scroll down to **Privileged Gateway Intents**. You **MUST** toggle **ON** "Message Content Intent" or the bot won't be able to see your messages.
+4.  **Invite Bot:** Go to **OAuth2** -> **URL Generator**.
+    *   Select Scope: `bot`
+    *   Select Permissions: `Administrator` (or specifically `Send Messages` and `Read Message History`).
+5.  **Authorize:** Copy the URL, paste it in your browser, and add the bot to your server.
 
-### 🔹 What I did for Telegram:
-1. Messaged [@BotFather](https://t.me/botfather).
-2. Used `/newbot` to get an API Token instantly.
+### 🔹 Telegram Setup (Step-by-Step)
+1.  **Talk to the Father:** Open Telegram and search for **[@BotFather](https://t.me/botfather)**.
+2.  **New Bot:** Send `/newbot`.
+3.  **Name & Username:** Follow the prompts. The username must end in `_bot` (e.g., `tysam_labs_bot`).
+4.  **Get Token:** BotFather will give you an **API Token**. This is your `botToken` for the Telegram account in `openclaw.json`.
+5.  **Privacy Settings (Optional):** If you want to use the bot in a group chat, send `/setprivacy` to BotFather and toggle it to **Disabled** so it can see all messages.
 
 ---
 
