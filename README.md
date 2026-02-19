@@ -1,34 +1,34 @@
 # The Ultimate OpenClaw Setup Guide 🚀
 
-> This guide outlines a production-ready, multi-agent OpenClaw environment. It covers everything from the server setup to advanced multi-channel configuration.
+> A production-ready blueprint for a multi-agent, multi-channel OpenClaw environment.
 
 ---
 
-## 1. 🏗️ Infrastructure Foundation
-For maximum flexibility and power, run OpenClaw on a dedicated Linux environment (Ubuntu 22.04+ recommended).
+## 1. 🏗️ Infrastructure & File Structure
+OpenClaw is a Node.js-based autonomous agent system. It works best on a stable, always-on environment like an AWS EC2 instance (Ubuntu 22.04+).
 
-- **Hosting:** AWS EC2 (t3.medium or larger) recommended for a stable, always-on home.
-- **Node.js:** OpenClaw runs on Node. Ensure you have the latest LTS version (`v22+`).
-- **File Structure:**
-  ```text
-  /home/ubuntu/
-  ├── .openclaw/
-  │   ├── openclaw.json       # The Brain (Core Config)
-  │   ├── workspace/          # The Heart (SOUL.md, USER.md, AGENTS.md)
-  │   │   ├── memory/         # Daily logs and state files
-  │   │   └── skills/         # Custom tools and scripts
-  │   └── agents/             # Specialized Agent workspaces
-  │       └── specialized-agent/
-  │           ├── SOUL.md
-  │           └── USER.md
-  ├── dropbox/                # (Optional) For Obsidian sync
-  └── apps/                   # Custom web apps managed by the AI
-  ```
+### Core Directory Structure:
+```text
+/home/ubuntu/
+├── .openclaw/              # Hidden config directory
+│   ├── openclaw.json       # THE BRAIN: API keys, bots, and agent logic
+│   ├── workspace/          # THE HEART: Root agent personality and data
+│   │   ├── SOUL.md         # Defining WHO the AI is
+│   │   ├── USER.md         # Defining WHO you are
+│   │   ├── MEMORY.md       # Long-term curated memories
+│   │   ├── memory/         # Daily session logs (YYYY-MM-DD.md)
+│   │   └── skills/         # Custom scripts/tools (e.g., weather, obsidian)
+│   └── agents/             # THE ORG: Sub-agent workspaces
+│       └── equitas/        # Example specialized agent
+│           ├── SOUL.md     # Auditor personality
+│           └── USER.md     # Financial context only
+└── backup-to-s3.sh         # Redundancy script
+```
 
 ---
 
-## 2. 🧠 The Brain: `openclaw.json` (Example)
-This is the core configuration. It defines your models, channels, and how the AI interacts with the world.
+## 2. 🧠 The Configuration: `openclaw.json`
+This file is the single source of truth for your ecosystem.
 
 ```json
 {
@@ -37,26 +37,22 @@ This is the core configuration. It defines your models, channels, and how the AI
       "anthropic": {
         "apiKey": "sk-ant-...",
         "api": "anthropic-messages"
-      },
-      "openai": {
-        "apiKey": "sk-proj-...",
-        "api": "openai-responses"
       }
     }
   },
   "channels": {
     "discord": {
       "accounts": {
-        "main-bot": {
-          "botToken": "DISCORD_BOT_TOKEN",
+        "primary": {
+          "botToken": "DISCORD_TOKEN",
           "enabled": true
         }
       }
     },
     "telegram": {
       "accounts": {
-        "mobile-bot": {
-          "botToken": "TELEGRAM_BOT_TOKEN",
+        "mobile": {
+          "botToken": "TELEGRAM_TOKEN",
           "enabled": true
         }
       }
@@ -70,8 +66,8 @@ This is the core configuration. It defines your models, channels, and how the AI
         "model": { "primary": "anthropic/claude-sonnet-4-6" }
       },
       {
-        "id": "finance-bot",
-        "workspace": "/home/ubuntu/.openclaw/agents/finance",
+        "id": "equitas",
+        "workspace": "/home/ubuntu/.openclaw/agents/equitas",
         "model": { "primary": "google-gemini-cli/gemini-3-flash-preview" }
       }
     ]
@@ -79,11 +75,11 @@ This is the core configuration. It defines your models, channels, and how the AI
   "bindings": [
     {
       "agentId": "main",
-      "match": { "channel": "discord", "accountId": "main-bot" }
+      "match": { "channel": "discord", "accountId": "primary" }
     },
     {
-      "agentId": "finance-bot",
-      "match": { "channel": "telegram", "accountId": "mobile-bot" }
+      "agentId": "equitas",
+      "match": { "channel": "telegram", "accountId": "mobile" }
     }
   ]
 }
@@ -91,44 +87,38 @@ This is the core configuration. It defines your models, channels, and how the AI
 
 ---
 
-## 3. 🧬 The Soul & Identity
-OpenClaw is "context-driven." It looks at files in its workspace to figure out who it is.
+## 3. ⌨️ Essential OpenClaw CLI Commands
+Once installed, you interact with the system using the `openclaw` command.
 
-- **`SOUL.md`:** The AI's moral compass and personality.
-- **`USER.md`:** Information about you (preferences, goals, schedules).
-- **`AGENTS.md`:** Internal instructions for the AI on how to handle memory and tools.
+### Gateway Management (The Daemon)
+- `openclaw gateway status`  - Check if the system is running.
+- `openclaw gateway start`   - Start the background process.
+- `openclaw gateway stop`    - Kill the process.
+- `openclaw gateway restart` - Apply changes made to `openclaw.json`.
+
+### Session Control (Inside the Chat)
+- `/status`    - See current token usage, model, and context window size.
+- `/reasoning` - Toggle "Thinking" mode on/off (if the model supports it).
+- `/compact`   - Manually flush the context window to save tokens.
+
+---
+
+## 4. 🧬 Personalizing the Agent
+The agent reads these files at the start of **every** session.
+
+- **SOUL.md:** Define the vibe. Use this to set "Core Truths" (e.g., "Be resourceul before asking questions").
+- **USER.md:** Give it your context. Timezone, goals, and recurring tasks. 
+- **Pro-Tip:** If you have multiple agents, keep their `USER.md` files specific. Don't tell your Finance agent about your gym habits, or he'll start nagging you to lift when he should be auditing receipts.
 
 ---
 
-## 4. 🛡️ Multi-Agent Architecture
-Separate concerns for better security and focus.
-
-- **Main Agent:** System commands, coding, and general "Heavy Lifting."
-- **Specialized Agents:** Create agents with their own `SOUL.md` and `USER.md` to focus on specific domains (e.g., Finance, Research, or Health).
-
----
-
-## 5. 🚑 Disaster Recovery & Automation
-- **S3 Backups:** Use a cron job to sync the `.openclaw` directory to an S3 bucket every few hours.
-- **Git Mirroring:** Use multiple remotes (`gitlab` and `github`) to keep your code redundant.
-- **Systemd:** Run OpenClaw as a service so it auto-starts on boot.
-
-```ini
-# Example openclaw.service
-[Unit]
-Description=OpenClaw Gateway
-After=network.target
-
-[Service]
-Type=simple
-User=ubuntu
-WorkingDirectory=/home/ubuntu
-ExecStart=/usr/bin/openclaw gateway start
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-```
+## 5. 🛡️ Security & Redundancy
+- **AWS Security Groups:** Keep ports 22 (SSH), 80, and 443 restricted to your **Home IP** only.
+- **S3 Sync:** Set up a crontab to run a sync script every 6 hours:
+  ```bash
+  aws s3 sync ~/.openclaw/workspace s3://your-bucket-name/backup/
+  ```
+- **Git Mirroring:** Use `git remote add mirror <url>` to push your workspace to both GitLab and GitHub.
 
 ---
-*Generated by tysam for the OpenClaw Community — Feb 19, 2026*
+*Blueprint generated by tysam — Feb 19, 2026*
