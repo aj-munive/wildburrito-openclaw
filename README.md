@@ -1,76 +1,64 @@
-# The Ultimate OpenClaw Setup Guide 🚀
+# The OpenClaw Journey: From Scratch to Pro 🚀
 
-> A production-ready blueprint for a single-agent, multi-channel OpenClaw environment. Created with love by AJ and his agents.
+> A breakdown of my personal OpenClaw configuration and the "Lessons Learned" from my multi-agent setup. Created with love by AJ and his agents.
 
 ---
 
-## 1. 🏗️ Infrastructure & Installation
-OpenClaw is a Node.js-based autonomous agent system. It is highly portable and runs identically on **Ubuntu Linux** (e.g., AWS EC2) and **macOS**.
+## 🏗️ 1. Infrastructure: My "Always-On" Setup
+I run my environment on a dedicated **AWS EC2 instance (Ubuntu 22.04)**, but the file structures and logic are identical if you're running on **macOS**.
 
-### 💻 Prerequisites:
-- **Node.js:** Ensure you have the latest LTS version (`v22+`).
-- **NPM:** Comes bundled with Node.js.
-
-### 📥 Install OpenClaw:
-The official one-liner installs Node.js and everything else for you. Works on macOS, Windows, and Linux:
-
+### 📥 How I Installed It:
+I used the official one-liner which handles Node.js and dependencies automatically:
 ```bash
 curl -fsSL https://openclaw.ai/install.sh | bash
 ```
 
-Alternatively, if you already have Node.js, you can install it via NPM:
-```bash
-npm install -g openclaw
-```
-
-### 📂 Directory Structure (Informational)
-Once you install OpenClaw and go through the **Onboarding Wizard** (`openclaw gateway start`), the system will automatically generate the following structure in your Home folder. This is for your reference:
-
+### 📂 Directory Structure (The Result):
+Once the onboarding wizard finishes, it generates this structure in your Home folder. Here is how mine looks:
 ```text
-~/.openclaw/                # Generated hidden config directory
+~/.openclaw/                # Hidden config directory
 ├── openclaw.json           # THE BRAIN: API keys, bots, and agent logic
 ├── workspace/              # THE HEART: Root agent personality and data
-│   ├── SOUL.md             # Defining WHO the AI is
-│   ├── USER.md             # Defining WHO you are
-│   ├── IDENTITY.md         # The Agent's Name & Avatar
-│   ├── HEARTBEAT.md        # Proactive checklist
+│   ├── SOUL.md             # WHO the AI is (The Vibe)
+│   ├── USER.md             # WHO I am (Preferences/Habits)
+│   ├── IDENTITY.md         # Name, Emoji, and Avatar
+│   ├── HEARTBEAT.md        # The "Proactive" checklist
 │   ├── MEMORY.md           # Long-term curated memories
 │   ├── memory/             # Daily session logs (YYYY-MM-DD.md)
-│   └── skills/             # Custom scripts/tools
-└── backup-to-s3.sh         # Redundancy script
+│   └── skills/             # Custom tools (Weather, Obsidian, etc.)
+└── backup-to-s3.sh         # My custom disaster recovery script
 ```
 
 ---
 
-## 2. 💬 Create Your Channels (The Front Ends)
-Before you configure the brain, you need to create the communication lines.
+## 💬 2. Channels: Connecting the Front-Ends
+I use **Discord** for my primary deep-work UI and **Telegram** for quick mobile tasks.
 
-### 🔹 Discord Setup
-1.  Go to the **[Discord Developer Portal](https://discord.com/developers/applications)**.
-2.  Click **New Application** -> **Bot** tab.
-3.  Click **Reset Token** to get your `botToken`.
-4.  **CRITICAL:** Scroll to **Privileged Gateway Intents** and toggle **ON** "Message Content Intent."
-5.  Go to **OAuth2** -> **URL Generator** -> Select `bot` scope + `Administrator` permissions.
-6.  Copy the URL and invite the bot to your server.
+### 🔹 What I did for Discord:
+1. Created an app in the [Discord Developer Portal](https://discord.com/developers/applications).
+2. **Crucial Lesson:** I had to toggle **ON** "Message Content Intent" in the Bot tab, or the agent is "deaf."
+3. Generated a bot invite URL with `Administrator` permissions and invited it to my server.
 
-### 🔹 Telegram Setup
-1.  Open Telegram and search for **[@BotFather](https://t.me/botfather)**.
-2.  Send the command `/newbot` and follow the prompts to get your **API Token**.
+### 🔹 What I did for Telegram:
+1. Messaged [@BotFather](https://t.me/botfather).
+2. Used `/newbot` to get an API Token instantly.
 
 ---
 
-## 3. 🧬 Personalize the Agent
-After onboarding, you can personalize your agent by editing the files in `~/.openclaw/workspace/`. These files are read at the start of **every** session.
+## 🔑 3. The Model: Gemini 3 Flash (OAuth)
+I use **Gemini 3 Flash** via the `google-gemini-cli` provider. It's fast and cheap, but the setup is unique because it uses **OAuth** instead of a static API key.
 
-- **[SOUL.md](examples/SOUL.md):** Define the "vibe" and "Core Truths."
-- **[USER.md](examples/USER.md):** Provide your timezone, goals, and habits.
-- **[IDENTITY.md](examples/IDENTITY.md):** Set the agent's name and emoji.
-- **[HEARTBEAT.md](examples/HEARTBEAT.md):** Checklist for recurring background tasks.
+### How I triggered the Auth Flow:
+1. I added the provider to my `openclaw.json`.
+2. I stopped my background service (`openclaw gateway stop`).
+3. I ran it manually in the foreground: `openclaw gateway start`.
+4. The terminal printed a **Google URL**. I opened it, signed in, and pasted the code back into the terminal.
+5. OpenClaw saved the token in `~/.config/google-gemini-cli/`, and I was good to go.
 
 ---
 
-## 4. 🧠 Configure the Brain: `openclaw.json`
-Your `openclaw.json` is updated via the Wizard, but you can manually edit it at `~/.openclaw/openclaw.json` to fine-tune your setup.
+## 🧠 4. My Core Configuration: `openclaw.json`
+Here is a sanitized version of my "Brain" file. It shows how I bind multiple chat accounts to a single "Main" agent.
 
 ```json
 {
@@ -109,27 +97,27 @@ Your `openclaw.json` is updated via the Wizard, but you can manually edit it at 
 
 ---
 
-## 5. 🚀 Liftoff & Google Gemini Auth
-Since Gemini uses your actual Google Account, you must complete an OAuth flow in your terminal on the first run.
+## 🧬 5. Personality & Personalization
+The most important lesson I learned: **Context is everything.** The agent reads these files at the start of every session.
 
-1.  **Onboarding Wizard:** Run `openclaw gateway start` to begin the wizard.
-2.  **Authenticate:** During the process, the terminal will print a **URL**. Copy and paste this into your browser, sign in, and paste the **Verification Code** back into the terminal.
-3.  **Verify:** Message your bot on Discord or Telegram. If it replies, you are live!
-
----
-
-## 6. ⌨️ Management Commands
-- `openclaw gateway status`  - Check if the system is running.
-- `openclaw gateway restart` - Apply changes made to `openclaw.json`.
-- `/status` (in chat) - Check token usage and current model.
-- `/compact` (in chat) - Manual context flush to save tokens.
+- **[SOUL.md](examples/SOUL.md):** I set "Core Truths" here so my agent doesn't act like a corporate robot.
+- **[USER.md](examples/USER.md):** I gave it my timezone and habits. This is how it knows to nudge me if I haven't worked out.
+- **[HEARTBEAT.md](examples/HEARTBEAT.md):** This is my "background" brain. The agent checks this file periodically to see if it should take proactive actions.
 
 ---
 
-## 7. 🛡️ Security & Redundancy
-- **Firewall:** Keep ports 22, 80, and 443 restricted to your **Home IP** only.
-- **S3 Sync:** Set up a crontab to run a sync script every 6 hours.
-- **Git Mirroring:** Use `git remote add mirror <url>` to push your workspace to both GitLab and GitHub.
+## ⌨️ 6. Management: My Daily Commands
+I use these constantly to keep the system healthy:
+- `openclaw gateway restart` - Run this after every `openclaw.json` edit.
+- `/status` - My most used command. Shows token usage and current model.
+- `/compact` - If the conversation gets too long, I use this to "flush" the memory and save on API costs.
 
 ---
-*Blueprint generated by tysam — Feb 19, 2026*
+
+## 🛡️ 7. Security & Backups
+- **Firewall:** I keep ports 22, 80, and 443 restricted to my **Home IP** only.
+- **Backups:** I use a cron job to sync everything to S3 every 6 hours.
+- **Redundancy:** I push my workspace to both GitLab and GitHub so I never lose my memory files.
+
+---
+*A chronicle of Tysam Labs — Feb 19, 2026*
