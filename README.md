@@ -42,23 +42,38 @@ Once the onboarding finishes, it generates this structure in your Home folder. H
 ---
 
 ## 💬 2. Channels: Connecting the Front-Ends
-I use **Discord** for my primary deep-work UI and **Telegram** for quick mobile tasks.
+I use **Discord** for my primary deep-work UI and **Telegram** for quick mobile tasks. Here is the detailed breakdown of how to wire them up.
 
-### 🔹 Discord Setup (Step-by-Step)
-1.  **Create Application:** Go to the [Discord Developer Portal](https://discord.com/developers/applications) and create a "New Application."
-2.  **Generate Token:** Go to the **Bot** tab and click "Reset Token." This is your `botToken`.
-3.  **The "Golden Toggle":** On the **Bot** tab, scroll to **Privileged Gateway Intents**. You **MUST** toggle **ON** "Message Content Intent."
-4.  **Invite Bot:** Go to **OAuth2** -> **URL Generator** -> Select `bot` scope + `Administrator` permissions. Copy the URL and invite the bot to your server.
+### 🔹 Discord Setup (The High-Fidelity UI)
+1.  **Developer Portal:** Log into the **[Discord Developer Portal](https://discord.com/developers/applications)**.
+2.  **Create App:** Click **New Application** at the top right. Give it a name (e.g., "Tysam Assistant").
+3.  **Create Bot:** Navigate to the **Bot** tab on the left sidebar.
+    *   Click **Reset Token** to generate your bot's unique key. **Copy this immediately**; you'll need it for `openclaw.json`.
+    *   (Optional) Upload an icon and set a username.
+4.  **The "Golden Toggle" (Crucial):** Scroll down on the **Bot** page to the **Privileged Gateway Intents** section.
+    *   **Toggle ON:** `Message Content Intent`. 
+    *   *Without this, OpenClaw can join your server but will be "deaf" to your messages.*
+5.  **Generate Invite Link:** Navigate to **OAuth2** -> **URL Generator**.
+    *   **Scopes:** Select `bot`.
+    *   **Bot Permissions:** Select `Administrator` (easiest for personal servers) or manually select `Send Messages`, `Read Message History`, and `Attach Files`.
+6.  **Invite:** Copy the generated URL at the bottom, paste it into your browser, and select your server to invite the bot.
 
-### 🔹 Telegram Setup (Step-by-Step)
-1.  **Talk to the Father:** Open Telegram and search for **[@BotFather](https://t.me/botfather)**.
-2.  **New Bot:** Send `/newbot` and follow the prompts.
-3.  **Get Token:** BotFather will give you an **API Token**. This goes into your `openclaw.json`.
+### 🔹 Telegram Setup (The Mobile Command Line)
+1.  **Find the Father:** Open Telegram and search for **[@BotFather](https://t.me/botfather)**.
+2.  **Initialize:** Send the `/newbot` command.
+3.  **Naming:**
+    *   Choose a **Display Name** (e.g., "Tysam Mobile").
+    *   Choose a **Username** (must end in `_bot`, e.g., `aj_tysam_bot`).
+4.  **Get API Token:** BotFather will send a message containing your **HTTP API Token** (e.g., `123456:ABC-DEF1234...`). Copy this into your `openclaw.json`.
+5.  **Group Chat Usage (Optional):**
+    *   If you plan to add the bot to a group, send `/setprivacy` to BotFather.
+    *   Select your bot and set it to **Disabled**. This allows the bot to see all messages in the group, not just those starting with `/`.
+6.  **Start Chat:** Search for your bot's username in Telegram and hit **Start** to begin your first session.
 
 ---
 
 ## 🔑 3. The Model: Gemini 3 Flash (OAuth)
-I use **Gemini 3 Flash** via the `google-gemini-cli` provider. It uses **OAuth** instead of a static API key.
+I use **Gemini 3 Flash** via the `google-gemini-cli` provider. It's fast and cheap, but the setup is unique because it uses **OAuth** instead of a static API key.
 
 ### How I triggered the Auth Flow:
 1. I added the `"google-gemini-cli"` block to my `openclaw.json`.
@@ -129,7 +144,7 @@ The most important lesson I learned: **Context is everything.**
 ## 🛡️ 7. Security & Redundancy
 - **Firewall:** Keep ports 22, 80, and 443 restricted to your **Home IP** only.
 - **S3 Backups:** Use a cron job to sync your workspace to S3 every 6 hours.
-- **Git Mirroring:** Use `git remote add mirror <url>` to push to both GitLab and GitHub.
+- **Git Mirroring:** Use `git remote add mirror <url>` to push your workspace to both GitLab and GitHub.
 
 ---
 *A chronicle of Tysam Labs — Feb 19, 2026*
